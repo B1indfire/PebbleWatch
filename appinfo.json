@@ -1,0 +1,118 @@
+{
+    "appKeys": {
+        "KEY_CONDITIONS": 4,
+        "KEY_ICON": 5,
+        "KEY_INVERT": 2,
+        "KEY_TEMPERATURE": 3,
+        "KEY_TEMP_FORMAT": 0,
+        "KEY_TIME_FORMAT": 1
+    },
+    "capabilities": [
+        "location",
+        "configurable"
+    ],
+    "companyName": "jguo14@illinois.edu",
+    "longName": "Jimmy's Watchface",
+    "projectType": "native",
+    "resources": {
+        "media": [
+            {
+                "file": "images/Blue2.png",
+                "name": "IMAGE_BLUE2",
+                "type": "png"
+            },
+            {
+                "file": "images/Blue1.png",
+                "name": "IMAGE_BLUE1",
+                "type": "png"
+            },
+            {
+                "file": "images/Batt7.png",
+                "name": "IMAGE_BATT7",
+                "type": "png"
+            },
+            {
+                "file": "images/Batt6.png",
+                "name": "IMAGE_BATT6",
+                "type": "png"
+            },
+            {
+                "file": "images/Batt5.png",
+                "name": "IMAGE_BATT5",
+                "type": "png"
+            },
+            {
+                "file": "images/Batt4.png",
+                "name": "IMAGE_BATT4",
+                "type": "png"
+            },
+            {
+                "file": "images/Batt3.png",
+                "name": "IMAGE_BATT3",
+                "type": "png"
+            },
+            {
+                "file": "images/Batt2.png",
+                "name": "IMAGE_BATT2",
+                "type": "png"
+            },
+            {
+                "file": "images/Batt1.png",
+                "name": "IMAGE_BATT1",
+                "type": "png"
+            },
+            {
+                "file": "images/50d.png",
+                "name": "IMAGE_50d",
+                "type": "png"
+            },
+            {
+                "file": "images/13d.png",
+                "name": "IMAGE_13d",
+                "type": "png"
+            },
+            {
+                "file": "images/11d.png",
+                "name": "IMAGE_11d",
+                "type": "png"
+            },
+            {
+                "file": "images/10d.png",
+                "name": "IMAGE_10d",
+                "type": "png"
+            },
+            {
+                "file": "images/09d.png",
+                "name": "IMAGE_09d",
+                "type": "png"
+            },
+            {
+                "file": "images/04d.png",
+                "name": "IMAGE_04d",
+                "type": "png"
+            },
+            {
+                "file": "images/03d.png",
+                "name": "IMAGE_03d",
+                "type": "png"
+            },
+            {
+                "file": "images/02d.png",
+                "name": "IMAGE_02d",
+                "type": "png"
+            },
+            {
+                "file": "images/01d.png",
+                "name": "IMAGE_01d",
+                "type": "png"
+            }
+        ]
+    },
+    "shortName": "JG Watchface",
+    "uuid": "62f8a841-4c6e-45ab-9a72-4c8d4a23612c",
+    "versionCode": 1,
+    "versionLabel": "1.0",
+    "watchapp": {
+        "watchface": true
+    }
+}
