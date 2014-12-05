@@ -22,7 +22,7 @@
 			<option value="white">White</option>
 			<option value="black">Black</option>
 		</select><br><br>
-		<button type="submit" data-theme="a" id="b-submit">Submit</button></div>
+		<button type="submit" data-theme="a" id="b-submit">Submit</button>
 	</body>
 	
 	<script>
@@ -43,8 +43,8 @@
   		submitButton.addEventListener("click",
     			function() {	
 	      			var options = saveOptions();
-	      			var location.href = "pebblejs://close#" + encodeURIComponent(JSON.stringify(options));
-	      			document.location = location;
+	      			location.href = "pebblejs://close#" + encodeURIComponent(JSON.stringify(options));
+	      			<!--//document.location = location;-->
 	    			},
   			false);
 
