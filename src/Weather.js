@@ -1,7 +1,10 @@
 //sets the local storage to default if not found, else set to found item
-var temp = this.window.localStorage.getItem('temp') ? this.window.localStorage.getItem('temp') : 'C', 
-	time = this.window.localStorage.getItem('time') ? this.window.localStorage.getItem('time') : '12h',
-	color = this.window.localStorage.getItem('color') ? this.window.localStorage.getItem('color') : 'white';
+//var temp = this.window.localStorage.getItem('temp') ? this.window.localStorage.getItem('temp') : 'C', 
+//	time = this.window.localStorage.getItem('time') ? this.window.localStorage.getItem('time') : '12h',
+//	color = this.window.localStorage.getItem('color') ? this.window.localStorage.getItem('color') : 'black';
+var temp = 'C';
+var time = '12h';
+var color = 'white';
 
 //sets up the xhr Request object to send to appweather
 var xhrRequest = function (url, type, callback) {
@@ -25,7 +28,7 @@ function locationSuccess(pos) {
 		var json = JSON.parse(responseText);
 
 		// Temperature 
-		var temperature = Math.round(json.main.temp - 273.15);
+		var temperature = Math.round(json.main.temp);
 		console.log("Temperature is " + temperature);
 
 		// Conditions
@@ -69,18 +72,19 @@ function getWeather() {
   );
 }
 
-function sendConfig(temp, time, color){
+function sendConfig(_temp, _time, _color){
 	var dictionary = {
-			"KEY_TEMP_FORMAT": temp,
-			"KEY_TIME_FORMAT": time,
-			"KEY_INVERT": color
+			"KEY_TEMP_FORMAT": _temp,
+			"KEY_TIME_FORMAT": _time,
+			"KEY_INVERT": _color
 		};
+
 	Pebble.sendAppMessage(dictionary,
 			function(e) {
-				console.log("Weather info sent to Pebble successfully!");
+				console.log("config info sent to Pebble successfully!");
 			},
 			function(e) {
-				console.log("Error sending weather info to Pebble!");
+				console.log("Error sending config info to Pebble!");
 			}
 		);
 }
@@ -111,13 +115,20 @@ Pebble.addEventListener('showConfiguration', function() {
 //Listens for when the config page is closed
 Pebble.addEventListener('webviewclosed', function(e) {
 	var configuration = JSON.parse(decodeURIComponent(e.response));
-	temp = configuration.temp;
-	time = configuration.time;
-	color = configuration.color;
-	this.window.localStorage.setItem('temp', temp);
-	this.window.localStorage.setItem('time', time);
-	this.window.localStorage.setItem('color', color);
-	sendConfig(temp, time, color);
+	
+	var _temp = configuration.temp;
+	var _time = configuration.time;
+	var _color = configuration.color;
+	
+	temp=_temp;
+	time=_time;
+	color=_color;
+	
+	//is.window.localStorage.setItem('temp', _temp);
+	//nsole.log("color is: " + configuration.color);
+	//is.window.localStorage.setItem('time', _time);
+	//is.window.localStorage.setItem('color', _color);
+	sendConfig(_temp, _time, _color);
 });
 
 function parseIcon(number){

@@ -1,7 +1,7 @@
 #include "main.h"
-#include "pebble.h"
+#include <pebble.h>
 #include <string.h>
-#include "stdio.h"
+#include <stdio.h>
 
 #define KEY_TEMP_FORMAT 0
 #define KEY_TIME_FORMAT 1
@@ -14,6 +14,8 @@
 static bool temp_format=false;
 static bool time_format=false;
 static bool invert=false;
+static bool inverted = false;
+static int global_temp=0;
 
 static Window *s_main_window;
 static TextLayer *s_time_layer;
@@ -175,8 +177,10 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
 	static char conditions_buffer[32];
 	static char weather_layer_buffer[32];
 	static int icon_buffer;
-	static bool weather=false;
+	static int weather=0;
 
+	
+	
 	// Read first item
 	Tuple *t = dict_read_first(iterator);
 
@@ -185,26 +189,52 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
 		// Which key was received?
 		switch(t->key) {
 		case KEY_TEMP_FORMAT: //need to change the key numbers
+			APP_LOG(APP_LOG_LEVEL_INFO, t->value->cstring);
 			if(strcmp(t->value->cstring, "C") == 0)//Celsius
 				temp_format=false;
 			else temp_format=true;
+			
+			if(temp_format) //redraw temp layer
+				snprintf(temperature_buffer, sizeof(temperature_buffer), "%dF", (int)((global_temp-273.15)*1.8)+32);
+			else 
+				snprintf(temperature_buffer, sizeof(temperature_buffer), "%dC", (int)(global_temp - 273.15));
 			break;
 		case KEY_TIME_FORMAT:
 			if(strcmp(t->value->cstring, "12h") == 0)//set time_format to false
 				time_format=false;
 			else time_format=true;
+			
+			time_t now = time(NULL);
+			struct tm *current_time = localtime(&now);
+			minute_handler(current_time, MINUTE_UNIT);
+			
 			break;
 		case KEY_INVERT:
 			if(strcmp(t->value->cstring, "white") == 0)//set invert to false
 				invert=false;
 			else invert=true;
-			invert=(int)t->value->int32;
+
+			if(invert && !inverted){
+				s_invert_layer = inverter_layer_create(GRect(0,0,200,200));
+				layer_add_child(window_get_root_layer(s_main_window), inverter_layer_get_layer(s_invert_layer));
+				inverted=true;
+			}
+			else if(!invert && inverted){
+				inverter_layer_destroy(s_invert_layer);
+				inverted=false;
+			}
+				  
 			break;
 		case KEY_TEMPERATURE:
-			weather=true;
-			if(temp_format)
-				snprintf(temperature_buffer, sizeof(temperature_buffer), "%dF", (int)(t->value->int32*1.8)+32);
-			else snprintf(temperature_buffer, sizeof(temperature_buffer), "%dC", (int)t->value->int32);
+			weather=1;
+			if(temp_format){
+				snprintf(temperature_buffer, sizeof(temperature_buffer), "%dF", (int)((t->value->int32-273.15)*1.8)+32);
+				global_temp=(int)(t->value->int32);
+			}
+			else {
+				snprintf(temperature_buffer, sizeof(temperature_buffer), "%dC", (int)(t->value->int32- 273.15));
+				global_temp=(int)t->value->int32;
+			}
 			break;
 		case KEY_CONDITIONS:
 			snprintf(conditions_buffer, sizeof(conditions_buffer), "%s", t->value->cstring);
@@ -329,7 +359,7 @@ static void init(void) {
 	//tick_timer_service_subscribe(DAY_UNIT, &date_handler);
 	
 	//INITIALIZE WEATHER WINDOW
-	s_weather_layer = text_layer_create(GRect(55, 115, 144, 25));
+	s_weather_layer = text_layer_create(GRect(55, 115, 144, 30));
 	text_layer_set_background_color(s_weather_layer, GColorWhite);
 	text_layer_set_text_color(s_weather_layer, GColorBlack);
 	text_layer_set_text_alignment(s_weather_layer, GTextAlignmentLeft);
@@ -362,8 +392,9 @@ static void init(void) {
 
 	//INVERTS THE SCREEN AS PER CONFIG
 	if(invert){
-		s_invert_layer = inverter_layer_create(GRect(0,0,168,144));
+		s_invert_layer = inverter_layer_create(GRect(0,0,200,200));
 		layer_add_child(window_get_root_layer(s_main_window), inverter_layer_get_layer(s_invert_layer));
+		inverted = true;
 	}
 	
 }
@@ -375,9 +406,8 @@ static void deinit(void) {
 	bitmap_layer_destroy(s_wicon_layer);
 	gbitmap_destroy(s_battery_bitmap);
 	bitmap_layer_destroy(s_battery_layer);
-	gbitmap_destroy(s_bluetooth_bitmap);
 	bitmap_layer_destroy(s_bluetooth_layer);
-	if(invert)
+	if(inverted)
 		inverter_layer_destroy(s_invert_layer);
 	window_destroy(s_main_window);
 }
