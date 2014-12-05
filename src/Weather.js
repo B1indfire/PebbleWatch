@@ -39,9 +39,6 @@ function locationSuccess(pos) {
 		
 		// Assemble dictionary 
 		var dictionary = {
-			"KEY_TEMP_FORMAT": temp,
-			"KEY_TIME_FORMAT": time,
-			"KEY_INVERT": color,
 			"KEY_TEMPERATURE": temperature,
 			"KEY_CONDITIONS": conditions,
 			"KEY_ICON": icon
@@ -72,20 +69,18 @@ function getWeather() {
   );
 }
 
-function sendConfig(){		
-		// Assemble dictionary 
-		var dictionary = {
+function sendConfig(temp, time, color){
+	var dictionary = {
 			"KEY_TEMP_FORMAT": temp,
 			"KEY_TIME_FORMAT": time,
 			"KEY_INVERT": color
 		};
-
-		Pebble.sendAppMessage(dictionary,
+	Pebble.sendAppMessage(dictionary,
 			function(e) {
-				console.log("Config info sent to Pebble successfully!");
+				console.log("Weather info sent to Pebble successfully!");
 			},
 			function(e) {
-				console.log("Error sending config info to Pebble!");
+				console.log("Error sending weather info to Pebble!");
 			}
 		);
 }
@@ -122,7 +117,7 @@ Pebble.addEventListener('webviewclosed', function(e) {
 	this.window.localStorage.setItem('temp', temp);
 	this.window.localStorage.setItem('time', time);
 	this.window.localStorage.setItem('color', color);
-	sendConfig();
+	sendConfig(temp, time, color);
 });
 
 function parseIcon(number){
